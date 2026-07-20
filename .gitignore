@@ -1,0 +1,12 @@
+CLAUDE.md
+__pycache__/
+*.pyc
+
+# ESPHome build artifacts (created by `esphome compile` in tests/)
+.esphome/
+.pioenvs/
+secrets.yaml
+
+# Local throwaway esphome venvs / compile logs
+.venv*/
+.compile*.log

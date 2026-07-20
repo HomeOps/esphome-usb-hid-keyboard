@@ -1,0 +1,76 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+  # Weekly run so an upstream ESPHome release breaking the component is caught
+  # here rather than by a user. usb_host is young and still moving, so this
+  # matters more for this component than for most.
+  schedule:
+    - cron: "0 6 * * 1"
+
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install yamllint
+      - name: Python syntax check (component)
+        run: python -m compileall -q components
+      - name: yamllint test configs
+        run: yamllint -d relaxed tests
+
+  config:
+    name: Validate YAML schema
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install ESPHome (latest)
+        run: pip install esphome
+      - run: esphome version
+      # `esphome config` runs codegen validation without the toolchain, so
+      # schema regressions surface in seconds instead of after a full build.
+      - name: Validate configs
+        run: |
+          for f in tests/*.yaml; do
+            echo "::group::$f"
+            esphome config "$f"
+            echo "::endgroup::"
+          done
+
+  compile:
+    name: Compile (${{ matrix.config }})
+    runs-on: ubuntu-latest
+    needs: config
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          - tests/esp32s3.yaml
+          - tests/atoms3u.yaml
+          - tests/automations.yaml
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Cache PlatformIO + ESP-IDF
+        uses: actions/cache@v4
+        with:
+          path: ~/.platformio
+          key: pio-esp-idf-${{ hashFiles('tests/*.yaml') }}
+          restore-keys: pio-esp-idf-
+      - name: Install ESPHome (latest — this is the upstream-breakage signal)
+        run: pip install esphome
+      - run: esphome version
+      - name: Compile ${{ matrix.config }}
+        run: esphome compile ${{ matrix.config }}

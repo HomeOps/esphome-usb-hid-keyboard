@@ -1,0 +1,28 @@
+# M5Stack Atom S3U — the target hardware. Exercises usb_host bus tuning plus a
+# specific vid/pid match rather than the 0/0 wildcard.
+esphome:
+  name: usbhid-atoms3u
+
+esp32:
+  board: m5stack-atoms3
+  framework:
+    type: esp-idf
+
+logger:
+
+external_components:
+  - source:
+      type: local
+      path: ../components
+    components: [usb_hid_keyboard]
+
+usb_host:
+  enable_hubs: false
+  max_transfer_requests: 16
+
+usb_hid_keyboard:
+  id: remote
+  vid: 0x1915
+  pid: 0xAF01
+  on_key:
+    - lambda: ESP_LOGI("remote", "key 0x%02X", keycode);

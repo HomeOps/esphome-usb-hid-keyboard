@@ -1,0 +1,3 @@
+# CI runs on Linux and ESPHome's YAML/Python tooling is LF-native. Normalize on
+# commit so a Windows checkout doesn't produce CRLF diffs.
+* text=auto eol=lf

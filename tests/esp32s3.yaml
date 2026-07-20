@@ -1,0 +1,26 @@
+# Baseline compile target: generic ESP32-S3 devkit, both triggers wired up.
+esphome:
+  name: usbhid-s3
+
+esp32:
+  board: esp32-s3-devkitc-1
+  framework:
+    type: esp-idf
+
+logger:
+  level: DEBUG
+
+external_components:
+  - source:
+      type: local
+      path: ../components
+    components: [usb_hid_keyboard]
+
+usb_host:
+
+usb_hid_keyboard:
+  id: hid
+  on_key:
+    - lambda: ESP_LOGW("hid", "key 0x%02X mod 0x%02X", keycode, modifier);
+  on_consumer:
+    - lambda: ESP_LOGW("hid", "consumer 0x%04X", usage);
