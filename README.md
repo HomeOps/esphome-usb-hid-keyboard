@@ -1,5 +1,8 @@
 # ESPHome USB HID Keyboard (host)
 
+[![release](https://img.shields.io/github/v/release/HomeOps/esphome-usb-hid-keyboard?label=latest)](https://github.com/HomeOps/esphome-usb-hid-keyboard/releases/latest)
+[![CI](https://github.com/HomeOps/esphome-usb-hid-keyboard/actions/workflows/ci.yaml/badge.svg)](https://github.com/HomeOps/esphome-usb-hid-keyboard/actions/workflows/ci.yaml)
+
 Read a **USB HID keyboard or remote** plugged into an ESP32-S3 and fire ESPHome
 automations for every keypress. This is the HID layer on top of ESPHome's
 built-in `usb_host` component, which provides the bus but no keyboard support.
@@ -9,7 +12,10 @@ external_components:
   - source:
       type: git
       url: https://github.com/HomeOps/esphome-usb-hid-keyboard
-      ref: v1.0.0          # pin a release
+      # Pin a tag from the badge above / the Releases page. Don't track a
+      # branch: usb_host is still moving upstream and an unpinned ref will
+      # eventually reflash you onto a breaking change.
+      ref: <tag>
     components: [usb_hid_keyboard]
 
 usb_host:                  # required — provides the bus
