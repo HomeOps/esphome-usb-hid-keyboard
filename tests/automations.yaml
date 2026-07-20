@@ -24,7 +24,7 @@ external_components:
 usb_host:
 
 usb_hid_keyboard:
-  id: mx3
+  id: hid
   vid: 0x0000
   pid: 0x0000
   on_key:
@@ -38,7 +38,7 @@ usb_hid_keyboard:
           case 0x29: id(tv_back).press();   break;
           case 0x4A: id(tv_home).press();   break;
           default:
-            ESP_LOGW("mx3", "UNMAPPED key 0x%02X mod 0x%02X", keycode, modifier);
+            ESP_LOGW("hid", "key 0x%02X mod 0x%02X", keycode, modifier);
         }
     - logger.log:
         format: "second on_key automation, keycode=0x%02X"
@@ -53,7 +53,7 @@ usb_hid_keyboard:
           case 0xCD:  id(tv_play_pause).press();  break;
           case 0x223: id(tv_home).press();        break;
           default:
-            ESP_LOGW("mx3", "UNMAPPED consumer 0x%04X", usage);
+            ESP_LOGW("hid", "unmapped consumer 0x%04X", usage);
         }
 
 button:

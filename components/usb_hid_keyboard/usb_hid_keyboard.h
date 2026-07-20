@@ -51,8 +51,10 @@ static constexpr uint8_t HID_SET_IDLE = 0x0A;
 static constexpr uint8_t HID_SET_PROTOCOL = 0x0B;
 static constexpr uint8_t HID_PROTOCOL_BOOT = 0x00;
 
-// ── USB interface class/protocol codes ──────────────────────────────────────
-static constexpr uint8_t USB_CLASS_HID = 0x03;
+// ── USB interface protocol codes ────────────────────────────────────────────
+// USB_CLASS_HID is deliberately not defined here: ESP-IDF already provides it
+// as a macro in usb/usb_types_ch9.h, and a macro ignores namespaces, so a
+// same-named constexpr expands to `uint8_t 0x03 = 0x03` and fails to compile.
 static constexpr uint8_t USB_HID_PROTOCOL_KEYBOARD = 0x01;
 
 class USBHIDKeyboard;
